@@ -20,7 +20,6 @@ import javax.validation.constraints.NotNull;
  * Method Constructor with all arguments implemented by Lombok lib
  */
 @AllArgsConstructor
-
 /**
  * Method builder implemented by Lombok lib
  */
