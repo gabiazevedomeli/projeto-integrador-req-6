@@ -49,6 +49,7 @@ public class Generators {
 
         Product product = new Product();
         product.setId(1);
+        product.setCategoryName("Frutas");
         product.setPrice(12.20);
         product.setName("Maçã");
         product.setType("Fresco");
@@ -115,6 +116,7 @@ public class Generators {
         Product product = new Product();
         product.setId(4);
         product.setPrice(20.1);
+        product.setCategoryName("Frutas");
         product.setName("Uva");
         product.setType("Fresco");
 
