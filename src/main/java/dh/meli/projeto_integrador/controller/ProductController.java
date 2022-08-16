@@ -55,7 +55,7 @@ public class ProductController {
      */
     @GetMapping("/fresh-products/category/{categoryName}")
     public ResponseEntity<List<GenericProductOutputDto>> getProductsByCategoryName(@PathVariable String categoryName) {
-        return new ResponseEntity<>(productService.findByCategoryName(categoryName), HttpStatus.OK);
+        return new ResponseEntity<>(productService.findProductsByCategoryName(categoryName), HttpStatus.OK);
     }
 
     /**
