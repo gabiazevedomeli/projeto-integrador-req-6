@@ -34,8 +34,6 @@ import javax.validation.constraints.DecimalMin;
  */
 public class NewProductDto {
 
-    //TODO: verificar porque as validações não estão funcionando
-
     @NotBlank(message = "The name field is required")
     @Pattern(regexp = "(?=^.{2,60}$)^[A-ZÀÁÂĖÈÉÊÌÍÒÓÔÕÙÚÛÇ][a-zàáâãèéêìíóôõùúç]+(?:[ ](?:das?|dos?|de|e|[A-Z][a-z]+))*$", message = "The product name must be start with a capital letter.")
     private String name;
