@@ -199,7 +199,7 @@ public class ProductService implements IProductService {
     /**
      * An update method that return a partial product update
      * @param productId Long product identifier
-     * @param productChanges data on format Map<Key, Value> with the info to update the product
+     * @param productChanges data on format map (key, value) with the info to update the product
      * @return an object of type GenericProductOutputDto with the updated information about the product
      */
     @Override
