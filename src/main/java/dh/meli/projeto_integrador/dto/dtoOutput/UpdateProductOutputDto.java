@@ -1,16 +1,13 @@
 package dh.meli.projeto_integrador.dto.dtoOutput;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 /**
- * Method Getter implemented by Lombok lib for get access the private attributes of GenericProductOutputDto Class
+ * Method Getter implemented by Lombok lib for get access the private attributes of UpdateProductOutputDto Class
  */
 @Getter
 /**
- * Method Setter implemented by Lombok lib for set the private attributes of GenericProductOutputDto Class
+ * Method Setter implemented by Lombok lib for set the private attributes of UpdateProductOutputDto Class
  */
 @Setter
 /**
@@ -21,6 +18,10 @@ import lombok.Setter;
  * Method Constructor with all arguments implemented by Lombok lib
  */
 @AllArgsConstructor
+/**
+ * Method builder implemented by Lombok lib
+ */
+@Builder
 /**
  * Class used to create a Data Transfer Output Object to return an Update Product
  * @author Gabriela Azevedo
