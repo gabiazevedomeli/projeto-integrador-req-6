@@ -65,7 +65,7 @@ public interface IProductService {
     /**
      * Method implemented by ProductService that makes a partial update of a product
      * @param productId Long product identifier
-     * @param productChanges data on format Map<Key, Value> with the info to update the product
+     * @param productChanges data on format map (key, value) with the info to update the product
      * @return an updated object of type NewProductOutputDto
      */
     UpdateProductOutputDto partialUpdateOfProduct(Long productId, Map<String, ?> productChanges);
