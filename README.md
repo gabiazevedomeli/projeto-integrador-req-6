@@ -121,7 +121,7 @@ ___
 
 ## 🌙 Coleção de Requisições
 
-A coleção de requisições utilizadas para testar os endpoints estão na pasta `src/main/resource`. O arquivo `Projeto-Integrador.postman_collection.json` pode ser importado em algum cliente HTTP, como o Postman ou o Insomnia.
+A coleção de requisições utilizadas para testar os endpoints estão na pasta `projeto_integrador/Docs`. O arquivo `Projeto Integrador - Mercado Frescos.postman_collection.json` pode ser importado em algum cliente HTTP, como o Postman ou o Insomnia.
 
 ---
 
