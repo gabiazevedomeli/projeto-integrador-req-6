@@ -176,7 +176,7 @@ public class ProductService implements IProductService {
      * @return a list of of objects of type GenericProductOutputDto
      */
     @Override
-    public List<GenericProductOutputDto> findByCategoryName(String categoryName) {
+    public List<GenericProductOutputDto> findProductsByCategoryName(String categoryName) {
         List<Product> productByCategoryName = productRepository.findByCategoryName(categoryName);
 
         if (productByCategoryName.size() == 0) {
@@ -195,6 +195,7 @@ public class ProductService implements IProductService {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Not exists a product with this id: %d", productId)));
     }
+
     /**
      * An update method that return a partial product update
      * @param productId Long product identifier
@@ -215,8 +216,7 @@ public class ProductService implements IProductService {
                 case "price": productToUpdate.setPrice((Double) value); break;
             }
         });
-        return new UpdateProductOutputDto(String.format(updateMessage, productToUpdate.getName()),
-               new GenericProductOutputDto(productRepository.save(productToUpdate)));
+        return new UpdateProductOutputDto(String.format(updateMessage, productToUpdate.getName()), new GenericProductOutputDto(productRepository.save(productToUpdate)));
     }
 
     /**
