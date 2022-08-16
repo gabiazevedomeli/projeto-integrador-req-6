@@ -1,5 +1,7 @@
 package dh.meli.projeto_integrador.repository;
 
+import dh.meli.projeto_integrador.dto.dtoInput.NewProductDto;
+import dh.meli.projeto_integrador.dto.dtoOutput.NewProductOutputDto;
 import dh.meli.projeto_integrador.model.Product;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -21,4 +23,13 @@ public interface IProductRepository extends CrudRepository<Product, Long> {
      * @return an object of type Product filtered by type
      */
     List<Product> findAllByType(String type);
+
+    /**
+     * Method for to find a product by name
+     * @param name String
+     * @return an object of type Product filtered by name
+     */
+    Product findByName(String name);
+
+    List<Product> findByCategoryName(String categoryName);
 }
