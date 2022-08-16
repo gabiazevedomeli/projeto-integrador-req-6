@@ -148,7 +148,6 @@ public class CartService implements ICartService {
     }
 
     /**
-<<<<<<< HEAD
      * A method that recive a list of ProductCart fetch the products and create a list of CartProductsOutputDto.
      * @param cartProducts a list of objects of type ProductCart.
      * @return a list of CartProductsOutputDto.
