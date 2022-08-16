@@ -10,6 +10,9 @@ import dh.meli.projeto_integrador.repository.IBatchRepository;
 import dh.meli.projeto_integrador.repository.IProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+
 import static java.time.temporal.ChronoUnit.DAYS;
 
 import java.time.LocalDate;
@@ -131,50 +134,63 @@ public class ProductService implements IProductService {
     /**
      * Method to create a new product
      * @param newListProductDto an object of type NewProductDto
+     * @throws ForbiddenException exception thrown when a product(s) already exists
      * @return a list of objects of type Product
      */
     @Override
-    public List<NewProductOutputDto> createNewProduct(List<NewProductDto> newListProductDto) {
-        List<NewProductOutputDto> newProductsList = new ArrayList<>();
+    public List<GenericProductOutputDto> createNewProduct(List<NewProductDto> newListProductDto) {
+
+        List<GenericProductOutputDto> newProductsList = new ArrayList<>();
+        List<NewProductDto> newProducts = new ArrayList<>();
         List<String> listOfAlreadyExistingProducts = new ArrayList<>();
+
         newListProductDto.forEach(newProductDto -> {
            Product productAlreadyExists = productRepository.findByName(newProductDto.getName());
 
            if (productAlreadyExists != null) {
                listOfAlreadyExistingProducts.add(productAlreadyExists.getName());
+           } else {
+               newProducts.add(newProductDto);
            }
-
-           Product savedProduct = Product.builder()
-                   .name(newProductDto.getName())
-                   .type(newProductDto.getType())
-                   .categoryName(newProductDto.getCategoryName())
-                   .price(newProductDto.getPrice())
-                   .build();
-            newProductsList.add(new NewProductOutputDto(productRepository.save(savedProduct)));
         });
+            if (!listOfAlreadyExistingProducts.isEmpty()) {
+                throw new ForbiddenException(String.format("The product %s already exists.", listOfAlreadyExistingProducts));
+            }
 
-        if (!listOfAlreadyExistingProducts.isEmpty()) {
-            throw new ForbiddenException(String.format("The product %s already exists.", listOfAlreadyExistingProducts));
-        }
+            newProducts.forEach(newProductOutputDto -> {
+               Product savedProduct = Product.builder()
+                       .name(newProductOutputDto.getName())
+                       .type(newProductOutputDto.getType())
+                       .categoryName(newProductOutputDto.getCategoryName())
+                       .price(newProductOutputDto.getPrice())
+                       .build();
+                newProductsList.add(new GenericProductOutputDto(productRepository.save(savedProduct)));
+            });
         return newProductsList;
     }
 
     /**
      * A get method that return a list of products filtered by category name
      * @param categoryName String
-     * @return a list of of objects of type NewProductOutputDto
+     * @throws ResourceNotFoundException generic exception thrown when a product with the category passed by param doesn't exist
+     * @return a list of of objects of type GenericProductOutputDto
      */
     @Override
-    public List<NewProductOutputDto> findByCategoryName(String categoryName) {
+    public List<GenericProductOutputDto> findByCategoryName(String categoryName) {
         List<Product> productByCategoryName = productRepository.findByCategoryName(categoryName);
 
         if (productByCategoryName.size() == 0) {
             throw new ResourceNotFoundException(String.format("There is not existing products for this category: %s.", categoryName));
         }
-
-        return productByCategoryName.stream().map(NewProductOutputDto::new).collect(Collectors.toList());
+        return productByCategoryName.stream().map(GenericProductOutputDto::new).collect(Collectors.toList());
     }
 
+    /**
+     * Private method for to find a product by id. Used in more than one @Override methods for to verify the product identifier
+     * @param productId Long product identifier
+     * @throws ResourceNotFoundException generic exception thrown when a product with the id passed by param doesn't exist
+     * @return an object of type product
+     */
     private Product findProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException(String.format("Not exists a product with this id: %d", productId)));
@@ -183,34 +199,24 @@ public class ProductService implements IProductService {
      * An update method that return a partial product update
      * @param productId Long product identifier
      * @param productChanges data on format Map<Key, Value> with the info to update the product
-     * @return an object of type NewProductOutputDto with the updated information about the product
+     * @return an object of type GenericProductOutputDto with the updated information about the product
      */
     @Override
-    public NewProductOutputDto partialUpdateOfProduct(Long productId, Map<String, ?> productChanges) {
+    public UpdateProductOutputDto partialUpdateOfProduct(Long productId, Map<String, ?> productChanges) {
+
         Product productToUpdate = findProductById(productId);
+        String updateMessage = "The product %s was successfully updated!";
 
         productChanges.forEach((key, value) -> {
             switch (key) {
                 case "name": productToUpdate.setName((String) value); break;
                 case "type": productToUpdate.setType((String) value); break;
                 case "categoryName": productToUpdate.setCategoryName((String) value); break;
-                case "price": productToUpdate.setPrice((Double) value);
+                case "price": productToUpdate.setPrice((Double) value); break;
             }
         });
-        return new NewProductOutputDto(productRepository.save(productToUpdate));
-    }
-
-    /**
-     * Method that deletes a product by id
-     * @param productId Long product identifier
-     */
-    @Override
-    public void deleteProduct(Long productId) {
-        List<Batch> productToDelete = batchRepository.findBatchByProductId(productId);
-        productToDelete.forEach(product -> {
-            findProductById(product.getProduct().getId());
-            productRepository.delete(product.getProduct());
-        });
+        return new UpdateProductOutputDto(String.format(updateMessage, productToUpdate.getName()),
+               new GenericProductOutputDto(productRepository.save(productToUpdate)));
     }
 
     /**
