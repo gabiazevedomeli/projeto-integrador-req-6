@@ -1,9 +1,8 @@
 package dh.meli.projeto_integrador.service;
 
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductOutputDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ListProductByWarehouseDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductStockDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.TotalProductByWarehouseDto;
+import dh.meli.projeto_integrador.dto.dtoInput.NewProductDto;
+import dh.meli.projeto_integrador.dto.dtoOutput.*;
+import dh.meli.projeto_integrador.exception.ForbiddenException;
 import dh.meli.projeto_integrador.exception.ResourceNotFoundException;
 import dh.meli.projeto_integrador.model.Batch;
 import dh.meli.projeto_integrador.model.Product;
@@ -127,6 +126,91 @@ public class ProductService implements IProductService {
         }
 
         return new ListProductByWarehouseDto(productId, totalProductByWarehouseDtoList);
+    }
+
+    /**
+     * Method to create a new product
+     * @param newListProductDto an object of type NewProductDto
+     * @return a list of objects of type Product
+     */
+    @Override
+    public List<NewProductOutputDto> createNewProduct(List<NewProductDto> newListProductDto) {
+        List<NewProductOutputDto> newProductsList = new ArrayList<>();
+        List<String> listOfAlreadyExistingProducts = new ArrayList<>();
+        newListProductDto.forEach(newProductDto -> {
+           Product productAlreadyExists = productRepository.findByName(newProductDto.getName());
+
+           if (productAlreadyExists != null) {
+               listOfAlreadyExistingProducts.add(productAlreadyExists.getName());
+           }
+
+           Product savedProduct = Product.builder()
+                   .name(newProductDto.getName())
+                   .type(newProductDto.getType())
+                   .categoryName(newProductDto.getCategoryName())
+                   .price(newProductDto.getPrice())
+                   .build();
+            newProductsList.add(new NewProductOutputDto(productRepository.save(savedProduct)));
+        });
+
+        if (!listOfAlreadyExistingProducts.isEmpty()) {
+            throw new ForbiddenException(String.format("The product %s already exists.", listOfAlreadyExistingProducts));
+        }
+        return newProductsList;
+    }
+
+    /**
+     * A get method that return a list of products filtered by category name
+     * @param categoryName String
+     * @return a list of of objects of type NewProductOutputDto
+     */
+    @Override
+    public List<NewProductOutputDto> findByCategoryName(String categoryName) {
+        List<Product> productByCategoryName = productRepository.findByCategoryName(categoryName);
+
+        if (productByCategoryName.size() == 0) {
+            throw new ResourceNotFoundException(String.format("There is not existing products for this category: %s.", categoryName));
+        }
+
+        return productByCategoryName.stream().map(NewProductOutputDto::new).collect(Collectors.toList());
+    }
+
+    private Product findProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(String.format("Not exists a product with this id: %d", productId)));
+    }
+    /**
+     * An update method that return a partial product update
+     * @param productId Long product identifier
+     * @param productChanges data on format Map<Key, Value> with the info to update the product
+     * @return an object of type NewProductOutputDto with the updated information about the product
+     */
+    @Override
+    public NewProductOutputDto partialUpdateOfProduct(Long productId, Map<String, ?> productChanges) {
+        Product productToUpdate = findProductById(productId);
+
+        productChanges.forEach((key, value) -> {
+            switch (key) {
+                case "name": productToUpdate.setName((String) value); break;
+                case "type": productToUpdate.setType((String) value); break;
+                case "categoryName": productToUpdate.setCategoryName((String) value); break;
+                case "price": productToUpdate.setPrice((Double) value);
+            }
+        });
+        return new NewProductOutputDto(productRepository.save(productToUpdate));
+    }
+
+    /**
+     * Method that deletes a product by id
+     * @param productId Long product identifier
+     */
+    @Override
+    public void deleteProduct(Long productId) {
+        List<Batch> productToDelete = batchRepository.findBatchByProductId(productId);
+        productToDelete.forEach(product -> {
+            findProductById(product.getProduct().getId());
+            productRepository.delete(product.getProduct());
+        });
     }
 
     /**
