@@ -70,7 +70,7 @@ public class Batch {
     @Column(name = "due_date")
     private LocalDate dueDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @JsonIgnoreProperties("batches")
     private Product product;
