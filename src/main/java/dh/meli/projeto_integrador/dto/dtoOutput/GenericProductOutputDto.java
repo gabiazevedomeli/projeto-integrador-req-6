@@ -34,12 +34,18 @@ import lombok.Builder;
  * @see java.lang.Object
  */
 public class GenericProductOutputDto {
+    private Long id;
     private String name;
     private String type;
     private String categoryName;
     private Double price;
 
+    /**
+     * Constructor that receives an object of type Product build a GenericProductOutputDto
+     * @param product an object of type Product
+     */
     public GenericProductOutputDto(Product product) {
+        this.id = product.getId();
         this.name = product.getName();
         this.type = product.getType();
         this.categoryName = product.getCategoryName();
