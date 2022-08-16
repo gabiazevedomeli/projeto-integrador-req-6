@@ -61,7 +61,7 @@ public class ProductController {
     /**
      * A PATCH method responsible for to update a product partially
      * @param productId Long product identifier
-     * @param productChanges data on format Map<Key, Value> with the info to update the product came from the request body
+     * @param productChanges data on format map (key, value) with the info to update the product came from the request body
      * @return Response Entity of type List of NewProductOutputDto with the updated information about the product and the corresponding HttpStatus.
      */
     @PatchMapping("/fresh-products/update-product/{productId}")
