@@ -60,7 +60,7 @@ public interface IProductService {
      * @param categoryName String
      * @return a List of objects of type NewProductOutputDto
      */
-    List<GenericProductOutputDto> findByCategoryName(String categoryName);
+    List<GenericProductOutputDto> findProductsByCategoryName(String categoryName);
 
     /**
      * Method implemented by ProductService that makes a partial update of a product
