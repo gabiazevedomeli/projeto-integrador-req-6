@@ -1,10 +1,7 @@
 package dh.meli.projeto_integrador.service;
 
 import dh.meli.projeto_integrador.dto.dtoInput.NewProductDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.NewProductOutputDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductStockDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductOutputDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ListProductByWarehouseDto;
+import dh.meli.projeto_integrador.dto.dtoOutput.*;
 import dh.meli.projeto_integrador.model.Product;
 
 import java.util.List;
@@ -56,14 +53,14 @@ public interface IProductService {
      * @param newProductDto a List of objects of type newProductDto
      * @return a List of type NewProductOutputDto
      */
-    List<NewProductOutputDto> createNewProduct(List<NewProductDto> newProductDto);
+    List<GenericProductOutputDto> createNewProduct(List<NewProductDto> newProductDto);
 
     /**
      * Method implemented by ProductService that gets all products by product category name
      * @param categoryName String
      * @return a List of objects of type NewProductOutputDto
      */
-    List<NewProductOutputDto> findByCategoryName(String categoryName);
+    List<GenericProductOutputDto> findByCategoryName(String categoryName);
 
     /**
      * Method implemented by ProductService that makes a partial update of a product
@@ -71,11 +68,5 @@ public interface IProductService {
      * @param productChanges data on format Map<Key, Value> with the info to update the product
      * @return an updated object of type NewProductOutputDto
      */
-    NewProductOutputDto partialUpdateOfProduct(Long productId, Map<String, ?> productChanges);
-
-    /**
-     * Method for delete a product
-     * @param productId Long product identifier
-     */
-    void deleteProduct(Long productId);
+    UpdateProductOutputDto partialUpdateOfProduct(Long productId, Map<String, ?> productChanges);
 }
