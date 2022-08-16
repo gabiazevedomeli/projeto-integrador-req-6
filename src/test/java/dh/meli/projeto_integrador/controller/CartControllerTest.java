@@ -67,7 +67,7 @@ class CartControllerTest {
         BDDMockito.when(service.getCartById(anyLong()))
                 .thenReturn(Generators.validCartDto());
 
-        ResultActions response = mockMvc.perform(get("/api/v1/fresh-products//orders/{id}", Generators.validCart1().getId())
+        ResultActions response = mockMvc.perform(get("/api/v1/fresh-products/orders/{id}", Generators.validCart1().getId())
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andExpect(status().isOk())
