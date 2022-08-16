@@ -1,11 +1,7 @@
 package dh.meli.projeto_integrador.controller;
 
 import dh.meli.projeto_integrador.dto.dtoInput.NewProductDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.NewProductOutputDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductOutputDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductStockDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ListProductByWarehouseDto;
-import dh.meli.projeto_integrador.model.Product;
+import dh.meli.projeto_integrador.dto.dtoOutput.*;
 import dh.meli.projeto_integrador.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +44,7 @@ public class ProductController {
      * @return Response Entity of type List of NewProductOutputDto and the corresponding HttpStatus.
      */
     @PostMapping("/fresh-products/new")
-    public ResponseEntity<List<NewProductOutputDto>> createNewProducts(@RequestBody @Valid List<NewProductDto> listNewProductDto) {
+    public ResponseEntity<List<GenericProductOutputDto>> createNewProducts(@RequestBody @Valid List<NewProductDto> listNewProductDto) {
         return new ResponseEntity<>(productService.createNewProduct(listNewProductDto), HttpStatus.CREATED);
     }
 
@@ -58,7 +54,7 @@ public class ProductController {
      * @return Response Entity of type List of NewProductOutputDto and the corresponding HttpStatus.
      */
     @GetMapping("/fresh-products/category/{categoryName}")
-    public ResponseEntity<List<NewProductOutputDto>> getProductsByCategoryName(@PathVariable String categoryName) {
+    public ResponseEntity<List<GenericProductOutputDto>> getProductsByCategoryName(@PathVariable String categoryName) {
         return new ResponseEntity<>(productService.findByCategoryName(categoryName), HttpStatus.OK);
     }
 
@@ -69,19 +65,8 @@ public class ProductController {
      * @return Response Entity of type List of NewProductOutputDto with the updated information about the product and the corresponding HttpStatus.
      */
     @PatchMapping("/fresh-products/update-product/{productId}")
-    public ResponseEntity<NewProductOutputDto> partialUpdateProduct(@PathVariable Long productId, @RequestBody Map<String, ?> productChanges) {
+    public ResponseEntity<UpdateProductOutputDto> partialUpdateProduct(@PathVariable Long productId, @RequestBody Map<String, ?> productChanges) {
         return new ResponseEntity<>(productService.partialUpdateOfProduct(productId, productChanges), HttpStatus.OK);
-    }
-
-    /**
-     * A DELETE Method that deletes a product by id
-     * @param productId Long product identifier
-     * @return an object of type Response Entity and  the corresponding HttpStatus.
-     */
-    @DeleteMapping("/fresh-products/delete-product/{productId}")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long productId) {
-        productService.deleteProduct(productId);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     /**
