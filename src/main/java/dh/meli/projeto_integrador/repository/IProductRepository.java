@@ -23,14 +23,14 @@ public interface IProductRepository extends CrudRepository<Product, Long> {
     List<Product> findAllByType(String type);
 
     /**
-     * Method for to find a product by name
+     * Customized method for to find a product by name
      * @param name String
      * @return an object of type Product filtered by name
      */
     Product findByName(String name);
 
     /**
-     * Method for to find a product by category name
+     * Customized method for to find a product by category name
      * @param categoryName String
      * @return a list of objects of type products
      */
