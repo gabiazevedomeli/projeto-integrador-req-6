@@ -43,7 +43,7 @@ public class ProductController {
      * @param listNewProductDto a list of objects of type NewProductDto
      * @return Response Entity of type List of NewProductOutputDto and the corresponding HttpStatus.
      */
-    @PostMapping("/fresh-products/new")
+    @PostMapping("/fresh-products/create-products")
     public ResponseEntity<List<GenericProductOutputDto>> createNewProducts(@RequestBody @Valid List<NewProductDto> listNewProductDto) {
         return new ResponseEntity<>(productService.createNewProduct(listNewProductDto), HttpStatus.CREATED);
     }
