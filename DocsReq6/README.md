@@ -10,7 +10,7 @@ Esta feature se destina a `cadastrar` produtos, `atualizá-los` e `buscá-los` p
 `Representante` de um armazém, que terá como atribuição gerenciar a operação de Fulfillment da BU Mercado Frescos, quanto para a pessoa `Compradora`,
 que poderá filtrar seus produtos de interesse por categorias mais específicas, agilizando assim a busca.
 
-A proposta de melhoria para o `Projeto Integrador` comtempla a `implementação`, `testes` e `documentação` detalhada de 3 endpoints. São eles:
+A proposta de melhoria para o `Projeto Integrador` contempla a `implementação`, `testes` e `documentação` detalhada de 3 endpoints. São eles:
 
 
 ### - POST - Endpoint que tem como finalidade criar um produto inexistente.
