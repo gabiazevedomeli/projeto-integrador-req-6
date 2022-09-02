@@ -10,6 +10,8 @@ import lombok.Setter;
 
 
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -67,6 +69,9 @@ public class Product {
 
     @Column(name = "price")
     private double price;
+
+    @Column(name = "category_name")
+    private String categoryName;
 
     @OneToMany(mappedBy = "product")
     @JsonManagedReference

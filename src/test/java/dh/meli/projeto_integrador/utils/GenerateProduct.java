@@ -10,6 +10,7 @@ public class GenerateProduct {
     public static Product newProduct1() {
         return Product.builder()
                 .id(1)
+                .categoryName("Frutas")
                 .name("Morango")
                 .type("Fresco")
                 .price(5.0)

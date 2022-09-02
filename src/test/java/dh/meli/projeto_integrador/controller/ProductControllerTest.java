@@ -1,10 +1,10 @@
 package dh.meli.projeto_integrador.controller;
 
-import dh.meli.projeto_integrador.dto.dtoOutput.ListProductByWarehouseDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductOutputDto;
-import dh.meli.projeto_integrador.dto.dtoOutput.ProductStockDto;
+import dh.meli.projeto_integrador.dto.dtoInput.NewProductDto;
+import dh.meli.projeto_integrador.dto.dtoOutput.*;
 import dh.meli.projeto_integrador.service.ProductService;
 import dh.meli.projeto_integrador.util.Generators;
+import dh.meli.projeto_integrador.utilReq6.GeneratorsRequirementSix;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -75,7 +76,7 @@ class ProductControllerTest {
         BDDMockito.when(service.getProductsByCategory(anyString()))
                 .thenReturn(list);
 
-        ResultActions response = mockMvc.perform(get("/api/v1/fresh-products/{cayegory}",
+        ResultActions response = mockMvc.perform(get("/api/v1/fresh-products/{category}",
                 Generators.validProductDto1().getType())
                 .contentType(MediaType.APPLICATION_JSON));
 
@@ -121,5 +122,59 @@ class ProductControllerTest {
                         CoreMatchers.is(productStockDto.getBatchStockDto().size())))
                 .andExpect(jsonPath("$.name",
                         CoreMatchers.is(productStockDto.getName())));
+    }
+
+    // Testes dos métodos implementados no requisito 06
+
+    @Test
+    void createNewProduct_whenProductsDoesntExists() {
+        BDDMockito.when(productService.createNewProduct(ArgumentMatchers.anyList()))
+                .thenReturn(GeneratorsRequirementSix.createNewProductsOutputList());
+
+        List<NewProductDto> newProductsList = GeneratorsRequirementSix.createNewProductsList();
+
+        ResponseEntity<List<GenericProductOutputDto>> response = productController.createNewProducts(newProductsList);
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().get(0).getName()).isEqualTo(newProductsList.get(0).getName());
+
+        verify(productService, atLeastOnce()).createNewProduct(ArgumentMatchers.anyList());
+    }
+
+    @Test
+    void updateProduct_whenProductsExists() {
+
+        Long productId = 1L;
+
+        Map<String, String> changesToUpdate = GeneratorsRequirementSix.updateChanges();
+
+        BDDMockito.when(productService.partialUpdateOfProduct(productId, changesToUpdate))
+                .thenReturn(GeneratorsRequirementSix.updateProductOutputDto());
+
+        ResponseEntity<UpdateProductOutputDto> updatedProduct = productController.partialUpdateProduct(productId, changesToUpdate);
+
+        assertThat(updatedProduct.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(updatedProduct.getBody()).isNotNull();
+        assertThat(updatedProduct.getBody().getUpdateMessage()).isEqualTo(String.format("The product %s was successfully updated!", updatedProduct.getBody().getUpdatedProduct().getName()));
+
+        verify(productService, atLeastOnce()).partialUpdateOfProduct(productId, changesToUpdate);
+    }
+
+    @Test
+    void findProductsByCategoryName_whenProductsWithCategoryExists() {
+
+        BDDMockito.when(productService.findProductsByCategoryName(ArgumentMatchers.anyString()))
+                .thenReturn(GeneratorsRequirementSix.listOfProductsByCategoryName());
+
+        String category = "Frutas";
+
+        ResponseEntity<List<GenericProductOutputDto>> listProductsByCategory = productController.getProductsByCategoryName(category);
+
+        assertThat(listProductsByCategory.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(listProductsByCategory.getBody()).isNotNull();
+        assertThat(listProductsByCategory.getBody().get(0).getCategoryName()).isEqualTo(category);
+
+        verify(productService, atLeastOnce()).findProductsByCategoryName(category);
     }
 }
